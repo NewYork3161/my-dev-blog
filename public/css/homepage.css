@@ -1,0 +1,329 @@
+body {
+
+    margin: 0;
+
+    padding: 0;
+
+    background-color: #171A21;
+
+    font-family: Arial, Helvetica, sans-serif;
+
+    overflow-x: hidden;
+
+    color: white;
+
+}
+
+.navbar {
+
+    z-index: 1000;
+
+    background-color: #171A21 !important;
+
+    padding-left: 20px;
+
+    padding-right: 20px;
+
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+
+}
+
+.navbar-brand {
+
+    font-size: 2rem;
+
+    font-weight: bold;
+
+}
+
+.nav-link {
+
+    font-size: 1.1rem;
+
+    margin-left: 15px;
+
+}
+
+.hero-section {
+
+    position: relative;
+
+    width: 100%;
+
+    height: calc(100vh - 56px);
+
+    overflow: hidden;
+
+}
+
+.hero-image {
+
+    width: 100%;
+
+    height: 100%;
+
+    object-fit: cover;
+
+    display: block;
+
+}
+
+.overlay {
+
+    position: absolute;
+
+    top: 0;
+
+    left: 0;
+
+    width: 100%;
+
+    height: 100%;
+
+    background: rgba(0, 0, 0, 0.45);
+
+    z-index: 1;
+
+}
+
+.hero-content {
+
+    position: absolute;
+
+    top: 50%;
+
+    left: 50%;
+
+    transform: translate(-50%, -50%);
+
+    z-index: 2;
+
+    text-align: center;
+
+    color: white;
+
+    width: 90%;
+
+    max-width: 900px;
+
+}
+
+.hero-content h1 {
+
+    font-size: 5rem;
+
+    font-weight: bold;
+
+    text-shadow: 2px 2px 15px rgba(0, 0, 0, 0.7);
+
+}
+
+.hero-content p {
+
+    font-size: 1.5rem;
+
+    margin-top: 20px;
+
+    margin-bottom: 30px;
+
+    text-shadow: 1px 1px 10px rgba(0, 0, 0, 0.7);
+
+}
+
+.hero-content .btn {
+
+    padding: 15px 40px;
+
+    font-size: 1.2rem;
+
+    border-radius: 10px;
+
+}
+
+.card {
+
+    border-radius: 15px !important;
+
+    overflow: hidden;
+
+}
+
+.card-body {
+
+    background-color: #1B2838;
+
+}
+
+.card-text {
+
+    line-height: 1.8;
+
+    font-size: 1.05rem;
+
+}
+
+textarea.form-control {
+
+    background-color: #2A475E;
+
+    color: white;
+
+    border: 1px solid rgba(255,255,255,0.1);
+
+    resize: vertical;
+
+    min-height: 200px;
+
+}
+
+textarea.form-control:focus {
+
+    background-color: #2A475E;
+
+    color: white;
+
+    box-shadow: none;
+
+    border-color: #66C0F4;
+
+}
+
+.form-label {
+
+    font-size: 1.1rem;
+
+    margin-bottom: 10px;
+
+}
+
+.post-image {
+
+    width: 250px;
+
+    max-width: 100%;
+
+    height: auto;
+
+    object-fit: cover;
+
+    border-radius: 10px;
+
+    border: 2px solid rgba(255,255,255,0.08);
+
+}
+
+.btn {
+
+    border-radius: 8px;
+
+    padding: 10px 20px;
+
+    font-weight: 500;
+
+}
+
+.btn-primary {
+
+    background-color: #1A74E8;
+
+    border: none;
+
+}
+
+.btn-warning {
+
+    color: black;
+
+    font-weight: bold;
+
+}
+
+.btn-danger {
+
+    font-weight: bold;
+
+}
+
+.latest-post-card {
+
+    background-color: #6C757D;
+
+    border-radius: 12px;
+
+}
+
+@media (max-width: 992px) {
+
+    .hero-content h1 {
+
+        font-size: 3.5rem;
+
+    }
+
+    .hero-content p {
+
+        font-size: 1.2rem;
+
+    }
+
+}
+
+@media (max-width: 768px) {
+
+    .hero-content h1 {
+
+        font-size: 2.5rem;
+
+    }
+
+    .hero-content p {
+
+        font-size: 1rem;
+
+    }
+
+    .hero-content .btn {
+
+        width: 100%;
+
+        max-width: 300px;
+
+    }
+
+    .navbar-brand {
+
+        font-size: 1.6rem;
+
+    }
+
+}
+
+@media (max-width: 576px) {
+
+    .navbar-brand {
+
+        font-size: 1.3rem;
+
+    }
+
+    .hero-content h1 {
+
+        font-size: 2rem;
+
+    }
+
+    .hero-content p {
+
+        font-size: 0.95rem;
+
+    }
+
+    .btn {
+
+        width: 100%;
+
+        margin-top: 10px;
+
+    }
+
+}

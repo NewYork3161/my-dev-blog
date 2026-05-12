@@ -1,0 +1,1204 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Post Page</title>
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="/CSS/homepage.css">
+
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+
+        <div class="container-fluid">
+
+            <a class="navbar-brand" href="/home">
+                Michael Clarks Blog Site
+            </a>
+
+        </div>
+
+    </nav>
+
+    <div class="container py-5">
+
+        <div class="row justify-content-center">
+
+            <div class="col-lg-10">
+
+                <div class="card bg-dark text-white border-0 shadow-lg mb-5">
+
+                    <div class="card-body p-5">
+
+                        <h1>Create A Blog Post</h1>
+
+                        <hr>
+
+                        <form
+                            action="/create-post"
+                            method="POST"
+                            enctype="multipart/form-data">
+
+                            <div class="mb-4">
+
+                                <input
+                                    type="text"
+                                    name="title"
+                                    class="form-control"
+                                    placeholder="Post Title"
+                                    required>
+
+                            </div>
+
+                            <div class="mb-4">
+
+                                <textarea
+                                    name="content"
+                                    class="form-control"
+                                    rows="8"
+                                    placeholder="Write your post..."
+                                    required></textarea>
+
+                            </div>
+
+                            <div class="mb-4">
+
+                                <label class="form-label mb-3">
+                                    Add Image
+                                </label>
+
+                                <input
+                                    type="file"
+                                    id="postImageUpload"
+                                    name="image"
+                                    accept="image/*"
+                                    hidden>
+
+                                <div
+                                    id="uploadBox"
+                                    class="border border-secondary rounded p-5 text-center position-relative overflow-hidden"
+                                    style="
+                                        background-color: rgba(255,255,255,0.03);
+                                        cursor: pointer;
+                                        min-height: 300px;
+                                    "
+                                    onclick="document.getElementById('postImageUpload').click()">
+
+                                    <p
+                                        id="uploadText"
+                                        class="mb-0 text-secondary">
+
+                                        Drag & Drop Image Here
+                                        <br>
+                                        or
+                                        <br>
+                                        Click To Upload
+
+                                    </p>
+
+                                    <img
+                                        id="previewImage"
+                                        src=""
+                                        alt="Preview"
+                                        style="
+                                            display:none;
+                                            max-width:80%;
+                                            max-height:220px;
+                                            object-fit:cover;
+                                            border-radius:10px;
+                                            position:absolute;
+                                            top:50%;
+                                            left:50%;
+                                            transform:translate(-50%, -50%);
+                                        ">
+
+                                </div>
+
+                                <div
+                                    id="imageButtons"
+                                    class="mt-3"
+                                    style="display:none;">
+
+                                    <button
+                                        type="button"
+                                        class="btn btn-danger"
+                                        onclick="discardImage()">
+
+                                        Discard Image
+
+                                    </button>
+
+                                    <button
+                                        type="button"
+                                        class="btn btn-warning ms-2"
+                                        onclick="document.getElementById('postImageUpload').click()">
+
+                                        Edit Image
+
+                                    </button>
+
+                                </div>
+
+                            </div>
+
+                            <button
+                                type="submit"
+                                class="btn btn-primary">
+
+                                Post
+
+                            </button>
+
+                        </form>
+
+                        <hr class="mt-5 mb-4">
+
+                        <h2>Latest Posts</h2>
+
+                        <% posts.forEach(post => { %>
+
+                        <div class="card bg-secondary text-white mt-4 border-0 shadow">
+
+                            <div class="card-body p-4 position-relative">
+
+                                <button
+                                    class="btn btn-sm btn-dark position-absolute top-0 end-0 m-3"
+                                    onclick="openAdminPanel('<%= post._id %>')">
+
+                                    ✕
+
+                                </button>
+
+                                <h3>
+                                    <%= post.title %>
+                                </h3>
+
+                                <p class="text-light">
+
+                                    Posted by Michael Clark
+                                    <br>
+
+                                    <%= new Date(post.createdAt).toLocaleString() %>
+
+                                </p>
+
+                                <p>
+                                    <%= post.content %>
+                                </p>
+
+                                <% if(post.image) { %>
+
+                                <div class="text-center mt-4 mb-4">
+
+                                    <img
+                                        src="/images/<%= post.image %>"
+                                        class="img-fluid rounded shadow"
+                                        style="
+                                            width:250px;
+                                            max-width:100%;
+                                            object-fit:cover;
+                                        ">
+
+                                </div>
+
+                                <% } %>
+
+                                <hr>
+
+                                <h5>Responses</h5>
+
+                                <% responses.forEach(response => { %>
+
+                                <% if(response.postId.toString() === post._id.toString()) { %>
+
+                                <div class="card bg-dark border border-secondary text-white mb-3">
+
+                                    <div class="card-body position-relative">
+
+                                        <div
+                                            class="position-absolute top-0 end-0 m-3 d-flex gap-2">
+
+                                            <button
+                                                class="btn btn-warning btn-sm"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#editResponseModal<%= response._id %>">
+
+                                                Edit
+
+                                            </button>
+
+                                            <form
+                                                action="/delete-response/<%= response._id %>?_method=DELETE"
+                                                method="POST">
+
+                                                <button
+                                                    class="btn btn-danger btn-sm">
+
+                                                    Delete
+
+                                                </button>
+
+                                            </form>
+
+                                        </div>
+
+                                        <h6 class="text-info">
+
+                                            <%= response.username || "Anonymous User" %>
+
+                                        </h6>
+
+                                        <p>
+                                            <%= response.content %>
+                                        </p>
+
+                                        <% if(response.image) { %>
+
+                                        <div class="text-center mb-3">
+
+                                            <img
+                                                src="/images/<%= response.image %>"
+                                                class="img-fluid rounded shadow"
+                                                style="
+                                                    width:220px;
+                                                    max-width:100%;
+                                                    object-fit:cover;
+                                                ">
+
+                                        </div>
+
+                                        <% } %>
+
+                                        <small class="text-secondary">
+
+                                            Posted:
+                                            <%= new Date(response.createdAt).toLocaleString() %>
+
+                                        </small>
+
+                                    </div>
+
+                                </div>
+
+                                <div
+                                    class="modal fade"
+                                    id="editResponseModal<%= response._id %>"
+                                    tabindex="-1">
+
+                                    <div class="modal-dialog modal-lg modal-dialog-centered">
+
+                                        <div class="modal-content bg-dark text-white border-0">
+
+                                            <div class="modal-header border-secondary">
+
+                                                <h3>Edit Response</h3>
+
+                                                <button
+                                                    type="button"
+                                                    class="btn-close btn-close-white"
+                                                    data-bs-dismiss="modal">
+                                                </button>
+
+                                            </div>
+
+                                            <form
+                                                action="/edit-response/<%= response._id %>?_method=PUT"
+                                                method="POST"
+                                                enctype="multipart/form-data">
+
+                                                <div class="modal-body">
+
+                                                    <input
+                                                        type="text"
+                                                        id="editResponseUsername<%= response._id %>"
+                                                        name="username"
+                                                        class="form-control mb-4"
+                                                        value="<%= response.username %>"
+                                                        data-original-value="<%= response.username %>"
+                                                        required>
+
+                                                    <textarea
+                                                        id="editResponseContent<%= response._id %>"
+                                                        name="responseContent"
+                                                        class="form-control mb-4"
+                                                        rows="10"
+                                                        data-original-value="<%= response.content %>"
+                                                        required><%= response.content %></textarea>
+
+                                                    <div class="text-center mb-4">
+
+                                                        <% if(response.image) { %>
+
+                                                        <img
+                                                            id="editResponseImagePreview<%= response._id %>"
+                                                            src="/images/<%= response.image %>"
+                                                            data-original-src="/images/<%= response.image %>"
+                                                            class="img-fluid rounded"
+                                                            style="
+                                                                width:220px;
+                                                                max-width:100%;
+                                                                object-fit:cover;
+                                                                cursor:pointer;
+                                                            "
+                                                            onclick="document.getElementById('editResponseImageInput<%= response._id %>').click()">
+
+                                                        <% } else { %>
+
+                                                        <img
+                                                            id="editResponseImagePreview<%= response._id %>"
+                                                            src=""
+                                                            data-original-src=""
+                                                            class="img-fluid rounded"
+                                                            style="
+                                                                display:none;
+                                                                width:220px;
+                                                                max-width:100%;
+                                                                object-fit:cover;
+                                                                cursor:pointer;
+                                                            "
+                                                            onclick="document.getElementById('editResponseImageInput<%= response._id %>').click()">
+
+                                                        <% } %>
+
+                                                    </div>
+
+                                                    <input
+                                                        type="file"
+                                                        id="editResponseImageInput<%= response._id %>"
+                                                        name="responseImage"
+                                                        accept="image/*"
+                                                        class="form-control"
+                                                        onchange="previewEditResponseImage('<%= response._id %>')">
+
+                                                </div>
+
+                                                <div class="modal-footer border-secondary">
+
+                                                    <button
+                                                        type="button"
+                                                        class="btn btn-secondary"
+                                                        onclick="discardEditResponseChanges('<%= response._id %>')">
+
+                                                        Discard Changes
+
+                                                    </button>
+
+                                                    <button
+                                                        type="submit"
+                                                        class="btn btn-warning">
+
+                                                        Save Changes
+
+                                                    </button>
+
+                                                </div>
+
+                                            </form>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                                <% } %>
+
+                                <% }) %>
+
+                                <button
+                                    class="btn btn-primary"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#respondModal"
+                                    onclick="setResponsePostId('<%= post._id %>')">
+
+                                    Respond
+
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                        <div
+                            class="modal fade"
+                            id="editPostModal<%= post._id %>"
+                            tabindex="-1">
+
+                            <div class="modal-dialog modal-lg modal-dialog-centered">
+
+                                <div class="modal-content bg-dark text-white border-0">
+
+                                    <div class="modal-header border-secondary">
+
+                                        <h3>Edit Post</h3>
+
+                                        <button
+                                            type="button"
+                                            class="btn-close btn-close-white"
+                                            data-bs-dismiss="modal">
+                                        </button>
+
+                                    </div>
+
+                                    <form
+                                        action="/edit-post/<%= post._id %>?_method=PUT"
+                                        method="POST"
+                                        enctype="multipart/form-data">
+
+                                        <div class="modal-body">
+
+                                            <input
+                                                type="text"
+                                                id="editPostTitle<%= post._id %>"
+                                                name="title"
+                                                class="form-control mb-4"
+                                                value="<%= post.title %>"
+                                                data-original-value="<%= post.title %>"
+                                                required>
+
+                                            <textarea
+                                                id="editPostContent<%= post._id %>"
+                                                name="content"
+                                                class="form-control mb-4"
+                                                rows="10"
+                                                data-original-value="<%= post.content %>"
+                                                required><%= post.content %></textarea>
+
+                                            <div class="text-center mb-4">
+
+                                                <% if(post.image) { %>
+
+                                                <img
+                                                    id="editPostImagePreview<%= post._id %>"
+                                                    src="/images/<%= post.image %>"
+                                                    data-original-src="/images/<%= post.image %>"
+                                                    class="img-fluid rounded shadow"
+                                                    style="
+                                                        width:250px;
+                                                        max-width:100%;
+                                                        object-fit:cover;
+                                                        cursor:pointer;
+                                                    "
+                                                    onclick="document.getElementById('editPostImageInput<%= post._id %>').click()">
+
+                                                <% } else { %>
+
+                                                <img
+                                                    id="editPostImagePreview<%= post._id %>"
+                                                    src=""
+                                                    data-original-src=""
+                                                    class="img-fluid rounded shadow"
+                                                    style="
+                                                        display:none;
+                                                        width:250px;
+                                                        max-width:100%;
+                                                        object-fit:cover;
+                                                        cursor:pointer;
+                                                    "
+                                                    onclick="document.getElementById('editPostImageInput<%= post._id %>').click()">
+
+                                                <% } %>
+
+                                            </div>
+
+                                            <input
+                                                type="file"
+                                                id="editPostImageInput<%= post._id %>"
+                                                name="image"
+                                                accept="image/*"
+                                                class="form-control"
+                                                onchange="previewEditPostImage('<%= post._id %>')">
+
+                                        </div>
+
+                                        <div class="modal-footer border-secondary">
+
+                                            <button
+                                                type="button"
+                                                class="btn btn-secondary"
+                                                onclick="discardEditPostChanges('<%= post._id %>')">
+
+                                                Discard Changes
+
+                                            </button>
+
+                                            <button
+                                                type="submit"
+                                                class="btn btn-warning">
+
+                                                Save Changes
+
+                                            </button>
+
+                                        </div>
+
+                                    </form>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <% }) %>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div
+        class="modal fade"
+        id="respondModal"
+        tabindex="-1">
+
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+
+            <div class="modal-content bg-dark text-white border-0">
+
+                <div class="modal-header border-secondary">
+
+                    <h3>Respond To Post</h3>
+
+                    <button
+                        type="button"
+                        class="btn-close btn-close-white"
+                        data-bs-dismiss="modal">
+                    </button>
+
+                </div>
+
+                <form
+                    id="responseForm"
+                    action=""
+                    method="POST"
+                    enctype="multipart/form-data">
+
+                    <div class="modal-body">
+
+                        <input
+                            type="text"
+                            name="username"
+                            class="form-control mb-4"
+                            placeholder="Enter your name"
+                            required>
+
+                        <textarea
+                            name="responseContent"
+                            class="form-control mb-4"
+                            rows="10"
+                            placeholder="Write response..."
+                            required></textarea>
+
+                        <input
+                            type="file"
+                            id="responseImageUpload"
+                            name="responseImage"
+                            hidden>
+
+                        <div
+                            id="responseUploadBox"
+                            class="border border-secondary rounded p-5 text-center position-relative overflow-hidden"
+                            style="
+                                background-color: rgba(255,255,255,0.03);
+                                cursor:pointer;
+                                min-height:250px;
+                            "
+                            onclick="document.getElementById('responseImageUpload').click()">
+
+                            <p
+                                id="responseUploadText"
+                                class="text-secondary">
+
+                                Drag & Drop Image Here
+
+                            </p>
+
+                            <img
+                                id="responsePreviewImage"
+                                src=""
+                                style="
+                                    display:none;
+                                    max-width:80%;
+                                    max-height:180px;
+                                    object-fit:cover;
+                                    border-radius:10px;
+                                    position:absolute;
+                                    top:50%;
+                                    left:50%;
+                                    transform:translate(-50%, -50%);
+                                ">
+
+                        </div>
+
+                    </div>
+
+                    <div class="modal-footer border-secondary">
+
+                        <button
+                            type="submit"
+                            class="btn btn-primary">
+
+                            Post Response
+
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div
+        class="modal fade"
+        id="adminAccessModal"
+        tabindex="-1">
+
+        <div class="modal-dialog modal-dialog-centered">
+
+            <div class="modal-content bg-dark text-white border-0">
+
+                <div class="modal-header border-secondary">
+
+                    <h3>
+
+                        Admin Access
+
+                    </h3>
+
+                    <button
+                        type="button"
+                        class="btn-close btn-close-white"
+                        data-bs-dismiss="modal">
+                    </button>
+
+                </div>
+
+                <div class="modal-body">
+
+                    <input
+                        type="password"
+                        id="adminCodeInput"
+                        class="form-control"
+                        placeholder="Enter Admin Code">
+
+                    <div
+                        id="adminError"
+                        class="text-danger mt-3"
+                        style="display:none;">
+
+                        Incorrect Code
+
+                    </div>
+
+                </div>
+
+                <div class="modal-footer border-secondary">
+
+                    <button
+                        class="btn btn-primary"
+                        onclick="verifyAdminCode()">
+
+                        Enter
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div
+        class="modal fade"
+        id="adminOptionsModal"
+        tabindex="-1">
+
+        <div class="modal-dialog modal-dialog-centered">
+
+            <div class="modal-content bg-dark text-white border-0">
+
+                <div class="modal-header border-secondary">
+
+                    <h3>
+
+                        Post Controls
+
+                    </h3>
+
+                    <button
+                        type="button"
+                        class="btn-close btn-close-white"
+                        data-bs-dismiss="modal">
+                    </button>
+
+                </div>
+
+                <div class="modal-body text-center">
+
+                    <button
+                        id="editPostButton"
+                        class="btn btn-warning me-3">
+
+                        Edit Post
+
+                    </button>
+
+                    <button
+                        id="deletePostButton"
+                        class="btn btn-danger">
+
+                        Delete Post
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <script>
+
+        let currentPostId = "";
+
+        function openAdminPanel(postId) {
+
+            currentPostId = postId;
+
+            document.getElementById(
+                "adminCodeInput"
+            ).value = "";
+
+            document.getElementById(
+                "adminError"
+            ).style.display = "none";
+
+            const modal =
+                new bootstrap.Modal(
+                    document.getElementById(
+                        "adminAccessModal"
+                    )
+                );
+
+            modal.show();
+
+        }
+
+        function verifyAdminCode() {
+
+            const code =
+                document.getElementById(
+                    "adminCodeInput"
+                ).value;
+
+            if(code === "4151") {
+
+                bootstrap.Modal
+                    .getInstance(
+                        document.getElementById(
+                            "adminAccessModal"
+                        )
+                    )
+                    .hide();
+
+                document.getElementById(
+                    "editPostButton"
+                ).onclick = function() {
+
+                    bootstrap.Modal
+                        .getInstance(
+                            document.getElementById(
+                                "adminOptionsModal"
+                            )
+                        )
+                        .hide();
+
+                    const editModal =
+                        new bootstrap.Modal(
+                            document.getElementById(
+                                `editPostModal${currentPostId}`
+                            )
+                        );
+
+                    editModal.show();
+
+                };
+
+                document.getElementById(
+                    "deletePostButton"
+                ).onclick = function() {
+
+                    if(confirm("Delete this post?")) {
+
+                        fetch(
+                            `/delete-post/${currentPostId}?_method=DELETE`,
+                            {
+                                method: "POST"
+                            }
+                        )
+                        .then(() => {
+
+                            window.location.reload();
+
+                        });
+
+                    }
+
+                };
+
+                const modal =
+                    new bootstrap.Modal(
+                        document.getElementById(
+                            "adminOptionsModal"
+                        )
+                    );
+
+                modal.show();
+
+            }
+
+            else {
+
+                document.getElementById(
+                    "adminError"
+                ).style.display = "block";
+
+            }
+
+        }
+
+        function setResponsePostId(postId) {
+
+            document.getElementById(
+                "responseForm"
+            ).action =
+                `/create-response/${postId}`;
+
+        }
+
+        function previewEditPostImage(postId) {
+
+            const input =
+                document.getElementById(
+                    `editPostImageInput${postId}`
+                );
+
+            const preview =
+                document.getElementById(
+                    `editPostImagePreview${postId}`
+                );
+
+            const file =
+                input.files[0];
+
+            if(file) {
+
+                const reader =
+                    new FileReader();
+
+                reader.onload =
+                    function(event) {
+
+                        preview.src =
+                            event.target.result;
+
+                        preview.style.display =
+                            "inline-block";
+
+                    };
+
+                reader.readAsDataURL(file);
+
+            }
+
+        }
+
+        function discardEditPostChanges(postId) {
+
+            const titleInput =
+                document.getElementById(
+                    `editPostTitle${postId}`
+                );
+
+            const contentInput =
+                document.getElementById(
+                    `editPostContent${postId}`
+                );
+
+            const imageInput =
+                document.getElementById(
+                    `editPostImageInput${postId}`
+                );
+
+            const preview =
+                document.getElementById(
+                    `editPostImagePreview${postId}`
+                );
+
+            titleInput.value =
+                titleInput.dataset.originalValue;
+
+            contentInput.value =
+                contentInput.dataset.originalValue;
+
+            imageInput.value = "";
+
+            const originalSrc =
+                preview.dataset.originalSrc;
+
+            if(originalSrc) {
+
+                preview.src =
+                    originalSrc;
+
+                preview.style.display =
+                    "inline-block";
+
+            }
+
+            else {
+
+                preview.src = "";
+
+                preview.style.display =
+                    "none";
+
+            }
+
+        }
+
+        function previewEditResponseImage(responseId) {
+
+            const input =
+                document.getElementById(
+                    `editResponseImageInput${responseId}`
+                );
+
+            const preview =
+                document.getElementById(
+                    `editResponseImagePreview${responseId}`
+                );
+
+            const file =
+                input.files[0];
+
+            if(file) {
+
+                const reader =
+                    new FileReader();
+
+                reader.onload =
+                    function(event) {
+
+                        preview.src =
+                            event.target.result;
+
+                        preview.style.display =
+                            "inline-block";
+
+                    };
+
+                reader.readAsDataURL(file);
+
+            }
+
+        }
+
+        function discardEditResponseChanges(responseId) {
+
+            const usernameInput =
+                document.getElementById(
+                    `editResponseUsername${responseId}`
+                );
+
+            const contentInput =
+                document.getElementById(
+                    `editResponseContent${responseId}`
+                );
+
+            const imageInput =
+                document.getElementById(
+                    `editResponseImageInput${responseId}`
+                );
+
+            const preview =
+                document.getElementById(
+                    `editResponseImagePreview${responseId}`
+                );
+
+            usernameInput.value =
+                usernameInput.dataset.originalValue;
+
+            contentInput.value =
+                contentInput.dataset.originalValue;
+
+            imageInput.value = "";
+
+            const originalSrc =
+                preview.dataset.originalSrc;
+
+            if(originalSrc) {
+
+                preview.src =
+                    originalSrc;
+
+                preview.style.display =
+                    "inline-block";
+
+            }
+
+            else {
+
+                preview.src = "";
+
+                preview.style.display =
+                    "none";
+
+            }
+
+        }
+
+        const imageUpload =
+            document.getElementById(
+                "postImageUpload"
+            );
+
+        const previewImage =
+            document.getElementById(
+                "previewImage"
+            );
+
+        const imageButtons =
+            document.getElementById(
+                "imageButtons"
+            );
+
+        const uploadText =
+            document.getElementById(
+                "uploadText"
+            );
+
+        imageUpload.addEventListener(
+            "change",
+            function(event) {
+
+                const file =
+                    event.target.files[0];
+
+                if(file) {
+
+                    const reader =
+                        new FileReader();
+
+                    reader.onload =
+                        function(e) {
+
+                        previewImage.src =
+                            e.target.result;
+
+                        previewImage.style.display =
+                            "block";
+
+                        imageButtons.style.display =
+                            "block";
+
+                        uploadText.style.opacity =
+                            "0.15";
+
+                    };
+
+                    reader.readAsDataURL(file);
+
+                }
+
+            }
+        );
+
+        function discardImage() {
+
+            imageUpload.value = "";
+
+            previewImage.src = "";
+
+            previewImage.style.display = "none";
+
+            imageButtons.style.display = "none";
+
+            uploadText.style.opacity = "1";
+
+        }
+
+        const responseImageUpload =
+            document.getElementById(
+                "responseImageUpload"
+            );
+
+        const responsePreviewImage =
+            document.getElementById(
+                "responsePreviewImage"
+            );
+
+        responseImageUpload.addEventListener(
+            "change",
+            function(event) {
+
+                const file =
+                    event.target.files[0];
+
+                if(file) {
+
+                    const reader =
+                        new FileReader();
+
+                    reader.onload =
+                        function(e) {
+
+                        responsePreviewImage.src =
+                            e.target.result;
+
+                        responsePreviewImage.style.display =
+                            "block";
+
+                    };
+
+                    reader.readAsDataURL(file);
+
+                }
+
+            }
+        );
+
+    </script>
+
+    <script
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
+    </script>
+
+</body>
+
+</html>
